@@ -63,7 +63,7 @@ render: function() {
 _renderRow: function(rowData: string, sectionID: number, rowID: number) {
     var rowHash = Math.abs(hashCode(rowData));
     return (
-        <TouchableHighlight onPress={() => this._pressRow(rowID)}>
+        <TouchableHighlight >
             <View>
                 <View style={styles.row}>
                     <Image style={styles.thumb} source={{uri:rowData.picUrl}} />
@@ -77,10 +77,6 @@ _renderRow: function(rowData: string, sectionID: number, rowID: number) {
 },
 
 
-_pressRow: function(rowID: number) {
-    console.log(remoteData[rowID].url);
-
-},
 });
 var url;
 var remoteData = [];

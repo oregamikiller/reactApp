@@ -11,20 +11,15 @@ import React, {
   View
 } from 'react-native';
 
-var ListScence = require('./ListViewSimpleExample');
 
+var Nav = require('./NavigatorScene');
 
 class reactApp extends Component {
     render() {
         return (
-            <View style={styles.container}>
-                <Text style={styles.welcome}>
-                    欢迎使用
-                </Text>
-                <ListScence />
-            </View>
+            <Nav />
 
-        );
+    );
     }
 }
 
