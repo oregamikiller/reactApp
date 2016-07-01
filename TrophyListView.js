@@ -12,9 +12,9 @@ var {
         } = React;
 
 
-var ListViewSimpleExample = React.createClass({
+var TrophyListView = React.createClass({
     statics: {
-        title: '<ListView>',
+        title: 'Trophy',
         description: 'Performant, scrollable list of data.'
     },
 
@@ -22,7 +22,7 @@ var ListViewSimpleExample = React.createClass({
         this.fetchData();
     },
     fetchData : function() {
-        fetch('http://semidream.com/trophydata')
+        fetch('http://semidream.com/trophydata/detail/' + url)
             .then((response) => response.json())
             .then((responseData) => {
                 remoteData = remoteData.concat(responseData);
@@ -98,6 +98,8 @@ _pressRow: function(rowID: number) {
 },
 });
 
+
+var url='http://semidream.com';
 var remoteData = [];
 
 var hashCode = function(str) {
