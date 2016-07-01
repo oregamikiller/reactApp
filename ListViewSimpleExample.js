@@ -94,7 +94,11 @@ _renderRow: function(rowData: string, sectionID: number, rowID: number) {
 
 _pressRow: function(rowID: number) {
     console.log(remoteData[rowID].url);
+    this.props.navigator.push({
 
+        name: 'detail',
+        url: remoteData[rowID].url
+    });
 },
 });
 

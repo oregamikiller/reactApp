@@ -22,7 +22,7 @@ var TrophyListView = React.createClass({
         this.fetchData();
     },
     fetchData : function() {
-        fetch('http://semidream.com/trophydata/detail/' + url)
+        fetch('http://semidream.com/trophydetail/' + url.replace('http://d7vg.com/psngame/',''))
             .then((response) => response.json())
             .then((responseData) => {
                 remoteData = remoteData.concat(responseData);
@@ -34,22 +34,9 @@ var TrophyListView = React.createClass({
             .done();
     },
 
-    fetchNext: function() {
-        let page = parseInt(this.state.dataSource.getRowCount() / 20) + 1;
-        this.state.dataSource
-        console.log(page);
-        fetch('http://semidream.com/trophydata/' + page)
-            .then((response) => response.json())
-            .then((responseData) => {
-                remoteData = remoteData.concat(responseData);
-                this.setState({
-                    dataSource : this.state.dataSource.cloneWithRows(remoteData),
-                    loaded : true,
-                });
-            })
-            .done();
-    },
     getInitialState : function() {
+
+        url= this.props.url;
         return {
             dataSource : new ListView.DataSource({
                 rowHasChanged : (row1, row2) => row1 !== row2
@@ -69,8 +56,6 @@ render: function() {
                 dataSource={this.state.dataSource}
                 renderRow={this._renderRow}
                 renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
-                onEndReached={this.fetchNext}
-                onEndReachedThreshold={20}
                 />
     );
 },
@@ -97,9 +82,7 @@ _pressRow: function(rowID: number) {
 
 },
 });
-
-
-var url='http://semidream.com';
+var url;
 var remoteData = [];
 
 var hashCode = function(str) {
@@ -122,8 +105,8 @@ var styles = StyleSheet.create({
         backgroundColor: '#CCCCCC',
     },
     thumb: {
-        width: 100,
-        height: 55,
+        width: 54,
+        height: 54,
         margin:5,
     },
     text: {
@@ -132,4 +115,4 @@ var styles = StyleSheet.create({
     },
 });
 
-module.exports = ListViewSimpleExample;
+module.exports = TrophyListView;

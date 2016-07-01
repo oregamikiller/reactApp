@@ -8,6 +8,10 @@ var {
     BackAndroid,
 } = React;
 
+var Routes = require('./Routes');
+var ListScence = require('./ListViewSimpleExample');
+var TrophyListView = require('./TrophyListView');
+
 var NavigatorScene = React.createClass({
     componentDidMount: function(rootNode) {
         BackAndroid.addEventListener('hardwareBackPress', () => {
@@ -16,42 +20,20 @@ var NavigatorScene = React.createClass({
 
     },
 
-    configureScene: function(route, routeStack) {
-        let currRoute
-        if (routeStack.length>1) {
-            currRoute = routeStack[routeStack.length-1];
-            console.log('configureScene routeStack', routeStack, currRoute.name)
-            if (currRoute.name===Routes.EditScene.name){
-                console.log('enter Edit Scene')
-                if (Platform.OS === 'ios'){
-                    return Navigator.SceneConfigs.FloatFromBottom
-                }else{
-                    return Navigator.SceneConfigs.FadeAndroid
-                }
-            }
-            if (currRoute.name===Routes.SnippetListScene.name){
-                if (Platform.OS === 'ios'){
-                    return Navigator.SceneConfigs.FloatFromBottom
-                }else{
-                    return Navigator.SceneConfigs.FloatFromBottom
-                }
-            }
-
-        }
-
-        return Navigator.SceneConfigs.FadeAndroid
+    renderScene: function (route, navigator) {
+            if (route && route.name =='detail') {return <TrophyListView url={route.url} />}
+            return ( <ListScence navigator={navigator} /> );
     },
 
-    render: function() {
-        var initialRoute = Routes.InitScene
+render: function() {
+        var initialRoute = Routes.InitScene;
 
         return (<Navigator
                 ref={(navigator)=>this.navigator=navigator}
                 style={styles.container}
                 initialRoute={initialRoute}
-                configureScene={this.configureScene}
-                renderScene={RouteMapper}
-                />)
+                renderScene={this.renderScene}
+                navigator={navigator} />)
     }
 });
 
