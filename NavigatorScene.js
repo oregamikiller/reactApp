@@ -9,19 +9,14 @@ var {
 } = React;
 
 var Routes = require('./Routes');
-var ListScence = require('./ListViewSimpleExample');
+var ListScence = require('./MainList');
 var TrophyListView = require('./TrophyListView');
 
 var NavigatorScene = React.createClass({
-    componentDidMount: function(rootNode) {
-        BackAndroid.addEventListener('hardwareBackPress', () => {
-            return hardwareBackAndroid.handle(this.navigator);
-        });
 
-    },
 
     renderScene: function (route, navigator) {
-            if (route && route.name =='detail') {return <TrophyListView url={route.url} />}
+            if (route && route.name =='detail') {return <TrophyListView url={route.url} navigator={navigator}/>}
             return ( <ListScence navigator={navigator} /> );
     },
 

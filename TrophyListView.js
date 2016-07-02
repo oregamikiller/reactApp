@@ -7,6 +7,7 @@ var {
         TouchableHighlight,
         StyleSheet,
         RecyclerViewBackedScrollView,
+        BackAndroid,
         Text,
         View,
         } = React;
@@ -18,16 +19,24 @@ var TrophyListView = React.createClass({
         description: 'Performant, scrollable list of data.'
     },
 
+
+
+
     componentDidMount : function() {
+        var self = this;
+        BackAndroid.addEventListener('hardwareBackPress', function() {
+            self.props.navigator.pop();
+            return true;
+        });
+
         this.fetchData();
     },
     fetchData : function() {
         fetch('http://semidream.com/trophydetail/' + url.replace('http://d7vg.com/psngame/',''))
             .then((response) => response.json())
             .then((responseData) => {
-                remoteData = remoteData.concat(responseData);
                 this.setState({
-                    dataSource : this.state.dataSource.cloneWithRows(remoteData),
+                    dataSource : this.state.dataSource.cloneWithRows(responseData),
                     loaded : true,
                 });
             })
@@ -45,9 +54,6 @@ var TrophyListView = React.createClass({
         }
     },
 
-    _pressRow: function(rowID: number) {
-        console.log(rowID);
-    },
 
 render: function() {
     return (
@@ -56,6 +62,7 @@ render: function() {
                 dataSource={this.state.dataSource}
                 renderRow={this._renderRow}
                 renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
+                renderSeparator={this._renderSeperator}
                 />
     );
 },
@@ -63,12 +70,12 @@ render: function() {
 _renderRow: function(rowData: string, sectionID: number, rowID: number) {
     var rowHash = Math.abs(hashCode(rowData));
     return (
-        <TouchableHighlight >
+        <TouchableHighlight onPress={() => this.props.navigator.pop()}>
             <View>
                 <View style={styles.row}>
                     <Image style={styles.thumb} source={{uri:rowData.picUrl}} />
                     <Text style={styles.text}>
-                        {rowData.title }
+                        {rowData.title }{"\n"}{rowData.desc}
                     </Text>
                 </View>
             </View>
@@ -76,10 +83,21 @@ _renderRow: function(rowData: string, sectionID: number, rowID: number) {
     );
 },
 
+    _renderSeperator: function(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
+        return (
+            <View
+                key={`${sectionID}-${rowID}`}
+                style={{
+          height: adjacentRowHighlighted ? 4 : 1,
+          backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
+        }}
+                />
+        );
+    }
+
 
 });
 var url;
-var remoteData = [];
 
 var hashCode = function(str) {
     var hash = 15;

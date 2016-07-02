@@ -69,6 +69,7 @@ render: function() {
                 dataSource={this.state.dataSource}
                 renderRow={this._renderRow}
                 renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
+                renderSeparator={this._renderSeperator}
                 onEndReached={this.fetchNext}
                 onEndReachedThreshold={20}
                 />
@@ -100,6 +101,20 @@ pressRow: function(rowID: number) {
         url: remoteData[rowID].url
     });
 },
+
+    _renderSeperator: function(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
+        return (
+            <View
+                key={`${sectionID}-${rowID}`}
+                style={{
+          height: adjacentRowHighlighted ? 4 : 1,
+          backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
+        }}
+                />
+        );
+    }
+
+
 });
 
 var remoteData = [];
