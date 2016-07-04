@@ -60,6 +60,7 @@ render: function() {
 
             <ListView
                 dataSource={this.state.dataSource}
+                enableEmptySections={true}
                 renderRow={this._renderRow}
                 renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
                 renderSeparator={this._renderSeperator}
