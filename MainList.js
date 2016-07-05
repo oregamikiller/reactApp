@@ -10,6 +10,7 @@ var {
         Text,
         View,
         TextInput,
+        BackAndroid,
         } = React;
 
 
@@ -20,6 +21,10 @@ var MainList = React.createClass({
     },
 
     componentDidMount: function () {
+
+        BackAndroid.addEventListener('hardwareBackPress', function () {
+            return false;
+        });
         this.fetchData();
     },
     fetchData: function () {
@@ -91,7 +96,7 @@ var MainList = React.createClass({
                     <View style={styles.row}>
                         <Image style={styles.thumb} source={{uri:rowData.picUrl}}/>
                         <Text style={styles.text}>
-                            {rowData.title }
+                            {rowData.title }{"\n"}{rowData.desc}
                         </Text>
                     </View>
                 </View>
@@ -123,7 +128,7 @@ var MainList = React.createClass({
         this.props.navigator.push({
 
             name: 'detail',
-            url: remoteData[rowID].url
+            gameid: remoteData[rowID].id
         });
     },
 

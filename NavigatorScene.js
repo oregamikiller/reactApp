@@ -17,7 +17,7 @@ var NavigatorScene = React.createClass({
 
     renderScene: function (route, navigator) {
         if (route && route.name == 'detail') {
-            return <TrophyListView url={route.url} navigator={navigator}/>
+            return <TrophyListView gameid={route.gameid} navigator={navigator}/>
         }
         return ( <ListScence navigator={navigator}/> );
     },

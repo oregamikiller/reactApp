@@ -32,7 +32,7 @@ var TrophyListView = React.createClass({
         this.fetchData();
     },
     fetchData: function () {
-        fetch('http://semidream.com/trophydetail/' + url.replace('http://d7vg.com/psngame/', ''))
+        fetch('http://semidream.com/trophydetail/' + gameid)
             .then((response) => response.json())
             .then((responseData) => {
                 this.setState({
@@ -45,7 +45,7 @@ var TrophyListView = React.createClass({
 
     getInitialState: function () {
 
-        url = this.props.url;
+        gameid = this.props.gameid;
         return {
             dataSource: new ListView.DataSource({
                 rowHasChanged: (row1, row2) => row1 !== row2
@@ -108,7 +108,7 @@ var TrophyListView = React.createClass({
 
 
 });
-var url;
+var gameid;
 
 var hashCode = function (str) {
     var hash = 15;
