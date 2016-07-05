@@ -13,101 +13,121 @@ var {
         } = React;
 
 
-var ListViewSimpleExample = React.createClass({
+var MainList = React.createClass({
     statics: {
         title: '<ListView>',
         description: 'Performant, scrollable list of data.'
     },
 
-    componentDidMount : function() {
+    componentDidMount: function () {
         this.fetchData();
     },
-    fetchData : function() {
+    fetchData: function () {
         fetch('http://semidream.com/trophydata')
             .then((response) => response.json())
             .then((responseData) => {
-                remoteData = remoteData.concat(responseData);
+                remoteData = responseData;
                 this.setState({
-                    dataSource : this.state.dataSource.cloneWithRows(remoteData),
-                    loaded : true,
+                    dataSource: this.state.dataSource.cloneWithRows(remoteData),
+                    loaded: true,
                 });
             })
             .done();
     },
 
-    fetchNext: function() {
+    fetchNext: function () {
         let page = parseInt(this.state.dataSource.getRowCount() / 20) + 1;
-        this.state.dataSource
         console.log(page);
-        fetch('http://semidream.com/trophydata/' + page)
-            .then((response) => response.json())
-            .then((responseData) => {
-                remoteData = remoteData.concat(responseData);
-                this.setState({
-                    dataSource : this.state.dataSource.cloneWithRows(remoteData),
-                    loaded : true,
-                });
-            })
-            .done();
+        if (!searchFlag) {
+            fetch('http://semidream.com/trophydata/' + page)
+                .then((response) => response.json())
+                .then((responseData) => {
+                    remoteData = remoteData.concat(responseData);
+                    this.setState({
+                        dataSource: this.state.dataSource.cloneWithRows(remoteData),
+                        loaded: true,
+                    });
+                })
+                .done();
+        }
     },
-    getInitialState : function() {
+    getInitialState: function () {
         return {
-            dataSource : new ListView.DataSource({
-                rowHasChanged : (row1, row2) => row1 !== row2
+            dataSource: new ListView.DataSource({
+                rowHasChanged: (row1, row2) => row1 !== row2
             }),
-            loaded : false,
+            loaded: false,
         }
     },
 
-    _pressRow: function(rowID: number) {
-        console.log(rowID);
+
+    render: function () {
+        return (
+            <View style={styles.container}>
+                <TextInput style={styles.searchbox}
+                           placeholder="请输入想搜索游戏的标题"
+                           returnKeyType="search"
+                           keyboardType="default"
+                           onChangeText={text => this.SearchTitle(text)}
+                    />
+                <ListView
+                    dataSource={this.state.dataSource}
+                    renderRow={this._renderRow}
+                    enableEmptySections={true}
+                    renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
+                    renderSeparator={this._renderSeperator}
+                    onEndReached={this.fetchNext}
+                    onEndReachedThreshold={20}
+                    />
+            </View>
+        );
     },
 
-render: function() {
-    return (
-            <View style={styles.container}>
-        <TextInput style={styles.searchbox}
-placeholder="Search a movie..."
-    />
-            <ListView
-                dataSource={this.state.dataSource}
-                renderRow={this._renderRow}
-                renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
-                renderSeparator={this._renderSeperator}
-                onEndReached={this.fetchNext}
-                onEndReachedThreshold={20}
-                />
-                        </View>
-    );
-},
-
-_renderRow: function(rowData: string, sectionID: number, rowID: number) {
-    var rowHash = Math.abs(hashCode(rowData));
-    return (
-        <TouchableHighlight onPress={() => this.pressRow(rowID)}>
-            <View>
-                <View style={styles.row}>
-                    <Image style={styles.thumb} source={{uri:rowData.picUrl}} />
-                    <Text style={styles.text}>
-                        {rowData.title }
-                    </Text>
+    _renderRow: function (rowData:string, sectionID:number, rowID:number) {
+        var rowHash = Math.abs(hashCode(rowData));
+        return (
+            <TouchableHighlight onPress={() => this.pressRow(rowID)}>
+                <View>
+                    <View style={styles.row}>
+                        <Image style={styles.thumb} source={{uri:rowData.picUrl}}/>
+                        <Text style={styles.text}>
+                            {rowData.title }
+                        </Text>
+                    </View>
                 </View>
-            </View>
-        </TouchableHighlight>
-    );
-},
+            </TouchableHighlight>
+        );
+    },
 
+    SearchTitle: function (text) {
+        if (text.length >= 1) {
+            searchFlag = true;
+            fetch('http://semidream.com/trophydata/title/' + text)
+                .then((response) => response.json())
+                .then((responseData) => {
+                    remoteData = responseData;
+                    this.setState({
+                        dataSource: this.state.dataSource.cloneWithRows(remoteData),
+                        loaded: true,
+                    });
+                })
+                .done();
+        } else {
+            searchFlag = false;
+            this.fetchData();
+        }
+    },
 
-pressRow: function(rowID: number) {
-    console.log(remoteData[rowID].url);
-    this.props.navigator.push({
+    pressRow: function (rowID:number) {
+        console.log(remoteData[rowID].url);
+        this.props.navigator.push({
 
-        name: 'detail',
-        url: remoteData[rowID].url
-    });
-},
+            name: 'detail',
+            url: remoteData[rowID].url
+        });
+    },
 
-    _renderSeperator: function(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
+    _renderSeperator: function (sectionID:number, rowID:number, adjacentRowHighlighted:bool) {
         return (
             <View
                 key={`${sectionID}-${rowID}`}
@@ -123,8 +143,9 @@ pressRow: function(rowID: number) {
 });
 
 var remoteData = [];
+var searchFlag = false;
 
-var hashCode = function(str) {
+var hashCode = function (str) {
     var hash = 15;
     for (var ii = str.length - 1; ii >= 0; ii--) {
         hash = ((hash << 5) - hash) + str.charCodeAt(ii);
@@ -138,7 +159,7 @@ var styles = StyleSheet.create({
         flexDirection: 'column',
     },
     searchbox: {
-        marginTop: 64,
+        marginTop: 20,
         padding: 3,
         fontSize: 20,
         borderColor: 'red',
@@ -160,12 +181,12 @@ var styles = StyleSheet.create({
     thumb: {
         width: 100,
         height: 55,
-        margin:5,
+        margin: 5,
     },
     text: {
-        margin:5,
+        margin: 5,
         flex: 1,
     },
 });
 
-module.exports = ListViewSimpleExample;
+module.exports = MainList;

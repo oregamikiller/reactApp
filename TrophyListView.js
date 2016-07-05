@@ -10,6 +10,7 @@ var {
         BackAndroid,
         Text,
         View,
+        Platform,
         } = React;
 
 var NativeAndroidActivityLoader = require('./NativeAndroidActivityLoader');
@@ -21,43 +22,41 @@ var TrophyListView = React.createClass({
     },
 
 
-
-
-    componentDidMount : function() {
+    componentDidMount: function () {
         var self = this;
-        BackAndroid.addEventListener('hardwareBackPress', function() {
+        BackAndroid.addEventListener('hardwareBackPress', function () {
             self.props.navigator.pop();
             return true;
         });
 
         this.fetchData();
     },
-    fetchData : function() {
-        fetch('http://semidream.com/trophydetail/' + url.replace('http://d7vg.com/psngame/',''))
+    fetchData: function () {
+        fetch('http://semidream.com/trophydetail/' + url.replace('http://d7vg.com/psngame/', ''))
             .then((response) => response.json())
             .then((responseData) => {
                 this.setState({
-                    dataSource : this.state.dataSource.cloneWithRows(responseData),
-                    loaded : true,
+                    dataSource: this.state.dataSource.cloneWithRows(responseData),
+                    loaded: true,
                 });
             })
             .done();
     },
 
-    getInitialState : function() {
+    getInitialState: function () {
 
-        url= this.props.url;
+        url = this.props.url;
         return {
-            dataSource : new ListView.DataSource({
-                rowHasChanged : (row1, row2) => row1 !== row2
+            dataSource: new ListView.DataSource({
+                rowHasChanged: (row1, row2) => row1 !== row2
             }),
-            loaded : false,
+            loaded: false,
         }
     },
 
 
-render: function() {
-    return (
+    render: function () {
+        return (
 
             <ListView
                 dataSource={this.state.dataSource}
@@ -66,26 +65,27 @@ render: function() {
                 renderScrollComponent={props => <RecyclerViewBackedScrollView {...props} />}
                 renderSeparator={this._renderSeperator}
                 />
-    );
-},
+        );
+    },
 
-_renderRow: function(rowData: string, sectionID: number, rowID: number) {
-    var rowHash = Math.abs(hashCode(rowData));
-    return (
-        <TouchableHighlight onPress={() => NativeAndroidActivityLoader.startActivityByString('com.reactapp.AdActivity')}>
-            <View>
-                <View style={styles.row}>
-                    <Image style={styles.thumb} source={{uri:rowData.picUrl}} />
-                    <Text style={styles.text}>
-                        {rowData.title }{"\n"}{rowData.desc}
-                    </Text>
+    _renderRow: function (rowData:string, sectionID:number, rowID:number) {
+        var rowHash = Math.abs(hashCode(rowData));
+        return (
+            <TouchableHighlight
+                onPress={() => this.pressRow(rowID)}>
+                <View>
+                    <View style={styles.row}>
+                        <Image style={styles.thumb} source={{uri:rowData.picUrl}}/>
+                        <Text style={styles.text}>
+                            {rowData.title }{"\n"}{rowData.desc}
+                        </Text>
+                    </View>
                 </View>
-            </View>
-        </TouchableHighlight>
-    );
-},
+            </TouchableHighlight>
+        );
+    },
 
-    _renderSeperator: function(sectionID: number, rowID: number, adjacentRowHighlighted: bool) {
+    _renderSeperator: function (sectionID:number, rowID:number, adjacentRowHighlighted:bool) {
         return (
             <View
                 key={`${sectionID}-${rowID}`}
@@ -95,13 +95,22 @@ _renderRow: function(rowData: string, sectionID: number, rowID: number) {
         }}
                 />
         );
-    }
+    },
+
+    pressRow:function (rowID:number) {
+        if (Platform.OS === 'ios')  {
+            this.props.navigator.pop()
+        } else {
+            NativeAndroidActivityLoader.startActivityByString('com.reactapp.AdActivity');
+        }
+
+},
 
 
 });
 var url;
 
-var hashCode = function(str) {
+var hashCode = function (str) {
     var hash = 15;
     for (var ii = str.length - 1; ii >= 0; ii--) {
         hash = ((hash << 5) - hash) + str.charCodeAt(ii);
@@ -123,10 +132,10 @@ var styles = StyleSheet.create({
     thumb: {
         width: 54,
         height: 54,
-        margin:5,
+        margin: 5,
     },
     text: {
-        margin:5,
+        margin: 5,
         flex: 1,
     },
 });
