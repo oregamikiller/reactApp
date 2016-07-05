@@ -9,6 +9,7 @@ var {
         RecyclerViewBackedScrollView,
         Text,
         View,
+        TextInput,
         } = React;
 
 
@@ -64,7 +65,10 @@ var ListViewSimpleExample = React.createClass({
 
 render: function() {
     return (
-
+            <View style={styles.container}>
+        <TextInput style={styles.searchbox}
+placeholder="Search a movie..."
+    />
             <ListView
                 dataSource={this.state.dataSource}
                 renderRow={this._renderRow}
@@ -73,6 +77,7 @@ render: function() {
                 onEndReached={this.fetchNext}
                 onEndReachedThreshold={20}
                 />
+                        </View>
     );
 },
 
@@ -128,6 +133,20 @@ var hashCode = function(str) {
 };
 
 var styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        flexDirection: 'column',
+    },
+    searchbox: {
+        marginTop: 64,
+        padding: 3,
+        fontSize: 20,
+        borderColor: 'red',
+        borderWidth: 1,
+        height: 30,
+        paddingLeft: 8,
+        flexDirection: 'row',
+    },
     row: {
         flexDirection: 'row',
         justifyContent: 'center',
