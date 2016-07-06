@@ -14,7 +14,12 @@ var TrophyListView = require('./TrophyListView');
 
 var NavigatorScene = React.createClass({
 
+    componentDidMount: function () {
 
+        BackAndroid.addEventListener('hardwareBackPress', function () {
+            return false;
+        });
+    },
     renderScene: function (route, navigator) {
         if (route && route.name == 'detail') {
             return <TrophyListView gameid={route.gameid} navigator={navigator}/>

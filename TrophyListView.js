@@ -25,8 +25,12 @@ var TrophyListView = React.createClass({
     componentDidMount: function () {
         var self = this;
         BackAndroid.addEventListener('hardwareBackPress', function () {
-            self.props.navigator.pop();
-            return true;
+            if (self.props.navigator.getCurrentRoutes().length > 1) {
+                self.props.navigator.pop();
+                return true;
+            } else {
+                return false;
+            }
         });
 
         this.fetchData();
@@ -99,9 +103,10 @@ var TrophyListView = React.createClass({
 
     pressRow:function (rowID:number) {
         if (Platform.OS === 'ios')  {
-            this.props.navigator.pop()
+            this.props.navigator.pop();
         } else {
-            NativeAndroidActivityLoader.startActivityByString('com.reactapp.AdActivity');
+            this.props.navigator.pop();
+            //NativeAndroidActivityLoader.startActivityByString('com.reactapp.AdActivity');
         }
 
 },

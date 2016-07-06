@@ -21,9 +21,13 @@ var MainList = React.createClass({
     },
 
     componentDidMount: function () {
-
+        var self = this;
         BackAndroid.addEventListener('hardwareBackPress', function () {
-            return false;
+            if (self.props.navigator.getCurrentRoutes().length > 1) {
+                return true;
+            } else {
+                return false;
+            }
         });
         this.fetchData();
     },
